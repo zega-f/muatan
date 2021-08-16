@@ -1,10 +1,10 @@
 @extends('muatan.layout')
 @section('content')
 <div class="container border mb-3 rounded" style="padding: 20px; background-color: white;">
-	<form action="{{url('coba_sn')}}" id="materi_form" method="post" enctype="multipart/form-data">
+	<form action="{{url('store_tugas')}}" id="materi_form" method="post" enctype="multipart/form-data">
 		@csrf
 		<h5 class="mb-3">
-			Materi
+			Tugas
 			<span style="float: right; font-size: 14px; font-weight: normal;">
 				<button class="btn btn-sm btn-success">
 					Simpan <i class="bi bi-check-square"></i>
@@ -13,7 +13,7 @@
 		</h5>
 		<table class="table">
 			<tr>
-				<td>Judul materi</td>
+				<td>Judul Tugas</td>
 				<td>
 					<input 
 					type="text" 
@@ -23,7 +23,7 @@
 					required
 					placeholder="E.g. What is e-learning?" 
 					>
-					<small class="text-muted">Berikan judul yang mewakili isi materi yang akan Anda buat.</small>
+					<small class="text-muted">Berikan judul yang mewakili isi tugas yang akan Anda buat.</small>
 				</td>
 			</tr>
 			<tr>
@@ -31,16 +31,18 @@
 				<td>
 					<div class="row">
 						<div class="col-md-6">
-							<select class="form-control" id="kelas" name="kelas" required="">
-								<option value="" selected="">Pilih kelas</option>
-								@foreach($all_kelas as $kelas)
-								<option value="{{$kelas->id_kelas}}">{{$kelas->room_name}}</option>
-								@endforeach
-							</select>
+							<div class="" style="position: relative;">
+								<select class="form-control" name="kelas" id="kelas" required="" style="width: 100%;">
+									<option value="" selected="">Pilih Kelas</option>
+									@foreach($all_kelas as $kelas)
+										<option value="{{$kelas->id_kelas}}">{{$kelas->room_name}}</option>
+									@endforeach
+								</select>
+							</div>
 							<small class="text-muted">Pilih kelas dimana materi ini akan diberikan</small>
 						</div>
 						<div class="col-md-6">
-							<select class="form-control" id="mapel" name="mapel" required="" disabled="">
+							<select class="form-control form-control-sm" id="mapel" name="mapel" required="" disabled="">
 								
 							</select>
 							<small class="text-muted">Pilih mata pelajaran</small>
@@ -49,7 +51,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Konten</td>
+				<td>Instruksi</td>
 				<td>
 					<textarea id="konten_materi" name="konten" required></textarea>
 				</td>
@@ -65,16 +67,10 @@
 		</table>
 	</form>
 </div>
-<div class="container rounded border" style="padding: 20px; background-color: white;">
-	<header class="mb-2"><b>Semua Materi</b></header>
-	<div class="alert alert-info" style="max-width: 600px; font-size: 14px;">
-		Tabel dibawah ini menampilkan materi secara keseluruhan. Untuk mengelola materi pada kelas, harap masuk pada kelas masing - masing.
-	</div>
-	<div id="materi_box" style="position: relative;">
-		@include('muatan.materi.component.all_materi_comp')
-	</div>
-</div>
 <script type="text/javascript">
+	$(document).ready(function() {
+	    $('#kelas').select2();
+	});
 	$('#kelas').on('change',function(){
 		var value = $(this).val();
 		var type = 'xhr';
@@ -115,18 +111,7 @@
 			}
 		});
 	})
-</script>
-<script type="text/javascript">
-	$('#submit_button').click(function(){
-		var lampiran_lenght = $('.lampiran').length;
-		if (lampiran_lenght>0) {
-			$('#canceled_form').submit();
-		}else{
-			alert('Harap unggah paling tidak satu lampiran');
-		}
-	})
-</script>
-<script type="text/javascript">
+
 	var konten = document.getElementById("konten_materi");
 	    CKEDITOR.replace(konten,{
 	    language:'en-gb'

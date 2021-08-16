@@ -1,7 +1,8 @@
 @extends('muatan.layout')
 @section('content')
 <div class="container rounded border" style="background-color: white; padding: 20px; max-width: 900px;">
-	<h5 style="text-align: center;">
+	<a href="{{url('/')}}" class="mb-3 link-secondary"><i class="ion-arrow-left-c"></i> Back</a>
+	<h5 class="mb-3" style="text-align:">
 		{{$this_materi->judul}}
 	</h5>
 	<?php  

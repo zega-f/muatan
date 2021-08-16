@@ -1,4 +1,8 @@
-<?php $all_materi = DB::table('coba_materi')->get(); ?>
+<?php $all_materi = DB::table('coba_materi')
+->join('kelas','coba_materi.id_kelas','=','kelas.id_kelas')
+->join('tblmapel','coba_materi.mapel','=','tblmapel.id_mapel')
+->select('coba_materi.*','kelas.room_name','tblmapel.nama as mapel_name')
+->get(); ?>
 <table class="table mt-3" id="materi_table">
 	<thead>
 		<tr>
@@ -12,8 +16,8 @@
 		@foreach($all_materi as $materi)
 			<tr>
 				<td>{{$materi->judul}}</td>
-				<td>{{$materi->id_kelas}}</td>
-				<td>{{$materi->mapel}}</td>
+				<td>{{$materi->room_name}}</td>
+				<td>{{$materi->mapel_name}}</td>
 				<td>
 					<a href="{{url('preview_materi/'.$materi->id_materi)}}" class="btn btn-sm btn-secondary ion-eye"></a>
 					<a href="{{url('edit_materi/'.$materi->id_materi)}}" class="btn btn-info btn-sm ion-edit"></a>
@@ -23,16 +27,24 @@
 		@endforeach
 	</tbody>
 </table>
+<div class="modal rounded" id="prog_modal" style="position: absolute;">
+	<div class="rounded" style="padding: 20px; background-color: white;">Sedang Memproses</div>
+</div>
 <script type="text/javascript">
 	$('.ion-trash-b').click(function(){
 		var id = $(this).data('id');
 		if (confirm('Apakah Anda yakin ingin menghapus materi ini? Menghapus materi akan menghapus semua lampiran dan file pendukung')) {
+			$('#prog_modal').css({
+				'display':'grid',
+				'place-items':'center',
+			});
 			$.ajax({
 				type : 'get',
 				url : '{{URL::to('delete_materi')}}',
-				data : {id_materi:id}
+				data : {id_materi:id},
 				success:function(data)
 				{
+					$('#prog_modal').hide();
 					$('#materi_box').html(data);
 				}
 			})

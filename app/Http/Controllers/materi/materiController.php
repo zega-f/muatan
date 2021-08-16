@@ -100,6 +100,55 @@ class materiController extends Controller
     	return view('muatan.materi.edit_materi',compact('this_materi','this_class_mapel','this_materi_lampiran','all_kelas','type'));
     }
 
+    public function update(Request $request, $id_materi)
+    {
+        $string_random = Str::random(32);
+        $directory = "materi/";
+        $lampiran_dir = "materi/lampiran/";
+        $file_array = array();
+
+        $store_materi = DB::table('coba_materi')
+        ->where('id_materi',$id_materi)
+        ->update([
+            'id_kelas'=>$request->kelas,
+            'mapel'=>$request->mapel,
+            'judul'=>$request->judul,
+        ]);
+
+        $json_content = array(
+            'id_materi' => $id_materi,
+            'judul'=>$request->judul,
+            'konten' => $request->konten,
+        );
+
+        $text = json_encode($json_content);
+
+        $myfile = fopen($directory.$id_materi.'.json', "w");
+        fwrite($myfile, $text);
+
+        if ($request->attachment) {
+            for ($i=0; $i <count($request->attachment) ; $i++) { 
+                $file_array[] = array(
+                    'materi_id'=>$id_materi,
+                    'attachment_name'=>$string_random.$request->attachment[$i]->getClientOriginalName(),
+                    'attachment_original_name'=>$request->attachment[$i]->getClientOriginalName(),
+                );
+                $request->attachment[$i]->move($lampiran_dir,$string_random.$request->attachment[$i]->getClientOriginalName());
+            }
+
+            $store_lampiran = DB::table('coba_materi_lampiran')
+            ->insert($file_array);
+        }
+
+        $save_to_history = DB::table('coba_materi_history')
+        ->insert([
+            'updated_by'=>'user',
+            'materi_id'=>$id_materi,
+        ]);
+
+        return back();
+    }
+
     public function delete_materi(Request $request)
     {
     	$this_materi = DB::table('coba_materi')
@@ -120,7 +169,7 @@ class materiController extends Controller
     		}
     	}
 
-    	if (File::exist('materi/'.$this_materi->id_materi.'.json')) {
+    	if (File::exists('materi/'.$this_materi->id_materi.'.json')) {
     		File::delete('materi/'.$this_materi->id_materi.'.json');
     	}
 
@@ -129,5 +178,15 @@ class materiController extends Controller
     		['materi_id',$this_materi->id_materi]
     	])
     	->delete();
+
+        $delete_materi = DB::table('coba_materi')
+        ->where([
+            ['id_materi',$request->id_materi]
+        ])
+        ->delete();
+
+        $all_materi = DB::table('coba_materi')->get();
+
+        return view('muatan.materi.component.all_materi_comp',compact('all_materi'));
     }
 }

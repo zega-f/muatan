@@ -75,7 +75,7 @@ class subMateriController extends Controller
     	])
     	->first();
 
-    	if (File::exist('materi/lampiran/'.$this_lampiran->attachment_name)) {
+    	if (File::exists('materi/lampiran/'.$this_lampiran->attachment_name)) {
     		File::delete('materi/lampiran/'.$this_lampiran->attachment_name);
     	}
 

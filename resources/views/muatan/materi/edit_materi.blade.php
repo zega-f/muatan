@@ -5,12 +5,13 @@
     $string = json_decode($materi_file,true);
 ?>
 <div class="container border mb-3 rounded" style="padding: 20px; background-color: white;">
-	<form action="{{url('coba_sn')}}" id="materi_form" method="post" enctype="multipart/form-data">
+	<form action="{{url('update_materi/'.$this_materi->id_materi)}}" id="materi_form" method="post" enctype="multipart/form-data">
 		@csrf
+		<a href="{{url('/')}}" class="mb-3 link-secondary"><i class="ion-arrow-left-c"></i> Back</a>
 		<h5 class="mb-3">
-			Materi
+			Edit materi
 			<span style="float: right; font-size: 14px; font-weight: normal;">
-				<button type="reset" class="btn btn-warning btn-sm" onclick="reset_mapel();">Reset <i class="ion-android-refresh"></i></button>
+				<button type="reset" class="btn btn-warning btn-sm" onclick="reset_mapel();">Batal <i class="ion-android-refresh"></i></button>
 				<button class="btn btn-sm btn-success">
 					Simpan <i class="bi bi-check-square"></i>
 				</button>
@@ -82,11 +83,53 @@
 		</table>
 	</form>
 </div>
+<div class="container rounded border" style="padding: 20px; background-color: white;">
+	<h5 class="mb-3">Edit History</h5>
+	<?php $all_history  = DB::table('coba_materi_history')->where('materi_id',$this_materi->id_materi)->get(); ?>
+	<table class="table" id="history">
+		<thead>
+			<tr>
+				<th>Oleh</th>
+				<th>@</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach($all_history as $history)
+			<tr>
+				<td>{{$history->updated_by}}</td>
+				<td>{{$history->updated_at}}</td>
+			</tr>
+			@endforeach
+		</tbody>
+	</table>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('#history').DataTable();
+		})
+	</script>
+</div>
+<div class="modal" id="cancel_confirm">
+	<div class="card shadow" style="border: none; max-width: 500px;">
+		<div class="card-header bg-info text-light">
+			<header>Batalkan edit materi? <span style="float: right;" class="ion-android-close pointer" onclick="cancel_reset();"></span></header>
+		</div>
+		<div class="card-body">
+			<div class="alert alert-warning">
+				Apakah anda yakin ingin membatalkan proses edit materi ini?
+			Perubahan yang tidak disimpan akan hilang.
+			</div>
+			<header>
+				<a href="{{url()->current()}}" class="btn btn-warning btn-sm">Ya, lanjutkan</a>
+			<button class="btn btn-info btn-sm" onclick="cancel_reset();">Tidak</button>
+			</header>
+		</div>
+	</div>
+</div>
 <script type="text/javascript">
 	$('.delete-file').click(function(){
 		var id = $(this).data('id');
 		var id_lampiran = $(this).data('lampiran');
-		if (confirm('File ini telah diunggah, apakah Anda yakin ingin menghapus file ini?')) {
+		if (confirm('File ini telah diunggah, apakah Anda yakin ingin menghapus file ini? File yang telah dihapus tidak dapat dipulihkan walaupun materi ini direset seperti semula')) {
 			// $('#list'+id).remove();
 			$.ajax({
 				type : 'get',
@@ -102,18 +145,15 @@
 
 	function reset_mapel()
 	{
-		var type = 'edit';
-		var value = '{{$this_materi->id_kelas}}';
-		var materi_id = '{{$this_materi->id_materi}}';
-		$.ajax({
-			type : 'get',
-			url : '{{URL::to('this_class_available_mapel')}}',
-			data : {id_kelas:value,type:type,materi_id:materi_id},
-			success:function(data)
-			{
-				$('#mapel').prop('disabled',false).html(data);
-			}
-		})
+		$('#cancel_confirm').css({
+			'display':'grid',
+			'place-items':'center'
+		});
+	}
+
+	function cancel_reset()
+	{
+		$('#cancel_confirm').hide();
 	}
 
 	$('#kelas').on('change',function(){
