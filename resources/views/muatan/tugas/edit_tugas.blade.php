@@ -1,11 +1,18 @@
 @extends('muatan.layout')
 @section('content')
+<?php  
+	$tugas_file = file_get_contents("public/muatan/tugas/".$this_tugas->id_tugas.'.json');
+    $string = json_decode($tugas_file,true);
+    $datetime = explode(' ', $this_tugas->waktu);
+?>
 <div class="container border mb-3 rounded" style="padding: 20px; background-color: white;">
-	<form action="{{url('store_tugas')}}" id="materi_form" method="post" enctype="multipart/form-data">
+	<form action="{{url('update_tugas/'.$this_tugas->id_tugas)}}" id="materi_form" method="post" enctype="multipart/form-data">
 		@csrf
+		<a href="{{url('/tugas')}}" class="mb-3 link-secondary"><i class="ion-arrow-left-c"></i> Back</a>
 		<h5 class="mb-3">
 			Tugas
 			<span style="float: right; font-size: 14px; font-weight: normal;">
+				<button type="reset" class="btn btn-warning btn-sm" onclick="reset_mapel();">Batal <i class="ion-android-refresh"></i></button>
 				<button class="btn btn-sm btn-success">
 					Simpan <i class="bi bi-check-square"></i>
 				</button>
@@ -22,6 +29,7 @@
 					class="form-control" 
 					required
 					placeholder="E.g. What is e-learning?" 
+					value="{{$this_tugas->judul}}" 
 					>
 					<small class="text-muted">Berikan judul yang mewakili isi tugas yang akan Anda buat.</small>
 				</td>
@@ -33,12 +41,6 @@
 						<div class="col-md-6">
 							<div class="" style="position: relative;">
 								<input type="text" name="kelas" class="form-control form-control-sm" value="1" readonly="">
-								<!-- <select class="form-control" name="kelas" id="kelas" required="" style="width: 100%;">
-									<option value="" selected="">Pilih Kelas</option>
-									@foreach($all_kelas as $kelas)
-										<option value="{{$kelas->id_kelas}}">{{$kelas->room_name}}</option>
-									@endforeach
-								</select> -->
 							</div>
 							<small class="text-muted">Pilih kelas dimana materi ini akan diberikan</small>
 						</div>
@@ -55,7 +57,7 @@
 			<tr>
 				<td>Instruksi</td>
 				<td>
-					<textarea id="konten_materi" name="konten" required></textarea>
+					<textarea id="konten_materi" name="konten" required><?php echo $string['konten']; ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -65,11 +67,11 @@
 				<td>
 					<div class="row">
 						<div class="col-6">
-							<input type="date" name="date" class="form-control form-control-sm" required="">
+							<input type="date" name="date" class="form-control form-control-sm" required="" value="{{$datetime[0]}}">
 							<small>Pilih hari</small>
 						</div>
 						<div class="col-6">
-							<input type="time" name="time" class="form-control form-control-sm" required="">
+							<input type="time" name="time" class="form-control form-control-sm" required="" value="{{$datetime[1]}}">
 							<small>Tentukan Waktu</small>
 						</div>
 					</div>
@@ -78,7 +80,18 @@
 			<tr>
 				<td>Lampiran</td>
 				<td>
-					<ul id="attachmentBox" style="list-style: none;"></ul>
+					<ul id="attachmentBox" style="list-style: none;">
+						<?php $i=0; ?>
+						@foreach($this_tugas_lampiran as $lampiran)
+						<?php $i++; ?>
+						<li id="list{{$i}}" class="lampiran">
+							<a href="{{url('public/muatan/tugas/lampiran/'.$lampiran->attachment_name)}}" class="btn btn-sm mb-2" type="button">
+								{{$lampiran->attachment_original_name}}
+							</a>
+							<i style="margin-left:20px; cursor:pointer;" class="ion-android-close delete-file" data-id="{{$i}}" data-lampiran="{{$lampiran->id}}"></i>
+						</li>
+						@endforeach
+					</ul>
 					<div id="file-box"></div>
 					<button class="btn btn-info btn-sm" id="add" type="button">Unggah File <i class="ion-upload"></i></button>
 				</td>
@@ -86,34 +99,55 @@
 		</table>
 	</form>
 </div>
-<div class="container border mb-3 rounded" style="padding: 20px; background-color: white;">
-	<header class="mb-2"><b>Semua Materi</b></header>
-	<div class="alert alert-info" style="max-width: 600px; font-size: 14px;">
-		Tabel dibawah ini menampilkan materi secara keseluruhan. Untuk mengelola materi pada kelas, harap masuk pada kelas masing - masing.
-	</div>
-	<div id="all_tugas_box" style="position: relative;">
-		@include('muatan.tugas.component.all_tugas_comp')
+<div class="modal" id="cancel_confirm">
+	<div class="card shadow" style="border: none; max-width: 500px;">
+		<div class="card-header bg-info text-light">
+			<header>Batalkan edit materi? <span style="float: right;" class="ion-android-close pointer" onclick="cancel_reset();"></span></header>
+		</div>
+		<div class="card-body">
+			<div class="alert alert-warning">
+				Apakah anda yakin ingin membatalkan proses edit tugas ini?
+			Perubahan yang tidak disimpan akan hilang.
+			</div>
+			<header>
+				<a href="{{url()->current()}}" class="btn btn-warning btn-sm">Ya, lanjutkan</a>
+			<button class="btn btn-info btn-sm" onclick="cancel_reset();">Tidak</button>
+			</header>
+		</div>
 	</div>
 </div>
 <script type="text/javascript">
-	$(document).ready(function() {
-	    $('#kelas').select2();
-	});
-	$('#kelas').on('change',function(){
-		var value = $(this).val();
-		var type = 'xhr';
-		$.ajax({
-			type : 'get',
-			url : '{{URL::to('this_class_available_mapel')}}',
-			data : {id_kelas:value,type:type},
-			success:function(data)
-			{
-				$('#mapel').prop('disabled',false).html(data);
-			}
-		})
-	});
+	function reset_mapel()
+	{
+		$('#cancel_confirm').css({
+			'display':'grid',
+			'place-items':'center'
+		});
+	}
 
-	var i = 0;
+	function cancel_reset()
+	{
+		$('#cancel_confirm').hide();
+	}
+
+	$('.delete-file').click(function(){
+		var id = $(this).data('id');
+		var id_lampiran = $(this).data('lampiran');
+		if (confirm('File ini telah diunggah, apakah Anda yakin ingin menghapus file ini? File yang telah dihapus tidak dapat dipulihkan walaupun materi ini direset seperti semula')) {
+			// $('#list'+id).remove();
+			$.ajax({
+				type : 'get',
+				url : '{{URL::to('delete_tugas_file')}}',
+				data : {lampiran_id:id_lampiran},
+				success:function(data)
+				{
+					$('#list'+id).remove();
+				}
+			})
+		}
+	})
+
+	var i = '{{$i}}';
 	$('#add').click(function(){
 		i++;
 		console.log(i);

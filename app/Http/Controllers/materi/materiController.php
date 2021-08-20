@@ -27,8 +27,8 @@ class materiController extends Controller
     {
     	$id_materi = Str::random(8);
     	$string_random = Str::random(32);
-    	$directory = "materi/";
-    	$lampiran_dir = "materi/lampiran/";
+    	$directory = "public/muatan/materi/";
+    	$lampiran_dir = "public/muatan/materi/lampiran/";
     	$file_array = array();
 
     	$store_materi = DB::table('coba_materi')

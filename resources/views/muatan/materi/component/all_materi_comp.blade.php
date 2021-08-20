@@ -1,8 +1,10 @@
-<?php $all_materi = DB::table('coba_materi')
+<?php 
+$all_materi = DB::table('coba_materi')
 ->join('kelas','coba_materi.id_kelas','=','kelas.id_kelas')
 ->join('tblmapel','coba_materi.mapel','=','tblmapel.id_mapel')
 ->select('coba_materi.*','kelas.room_name','tblmapel.nama as mapel_name')
-->get(); ?>
+->get(); 
+?>
 <table class="table mt-3" id="materi_table">
 	<thead>
 		<tr>
