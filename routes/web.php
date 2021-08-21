@@ -12,6 +12,7 @@ use App\Http\Controllers\tugas\subTugasController;
 
 
 use App\Http\Controllers\quiz\quizController;
+use App\Http\Controllers\quiz\subQuizController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,6 +25,7 @@ use App\Http\Controllers\quiz\quizController;
 */
 
 // change this route callback to materi_index
+
 // MATERI
 // index materi
 Route::get('/',[materiController::class,'index']);
@@ -43,6 +45,7 @@ Route::get('edit_materi/{materi_id}',[materiController::class,'edit']);
 Route::post('update_materi/{id_materi}',[materiController::class,'update']);
 // delete materi
 Route::get('delete_materi',[materiController::class,'delete_materi']);
+// END MATERI
 
 
 // TUGAS
@@ -62,10 +65,33 @@ Route::get('delete_tugas',[tugasController::class,'delete']);
 Route::get('preview_tugas/{tugas_id}',[subTugasController::class,'preview_tugas']);
 // delete file
 Route::get('delete_tugas_file',[subTugasController::class,'delete_file']);
+// END TUGAS
 
 
-// quiz
+// QUIZ
+// quiz index
 Route::get('quiz',[quizController::class,'index']);
+// store quiz
+Route::post('store_quiz',[quizController::class,'store']);
+// edit quiz
+Route::get('edit_quiz/{quiz_id}',[quizController::class,'edit']);
+
+// quiz component
+// store question
+Route::post('store_question',[subQuizController::class,'store_question']);
+// edit question
+Route::get('edit_this_question',[subQuizController::class,'edit_this_question']);
+// update question
+Route::post('updating_question',[subQuizController::class,'update_this_question']);
+// delete question
+Route::get('delete_this_question',[subQuizController::class,'delete_this_question']);
+
+// option
+// create option
+Route::get('create_option',[subQuizController::class,'create_option']);
+// store option
+Route::post('store_option',[subQuizController::class,'store_option']);
+// END QUIZ
 
 // COMMON
 // get kelas
