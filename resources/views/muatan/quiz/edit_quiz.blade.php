@@ -1,14 +1,18 @@
 @extends('muatan.layout')
 @section('content')
-<div class="container border mb-3 rounded" style="padding: 20px; background-color: white;">
-	<form action="{{url('store_quiz')}}" id="materi_form" method="post" enctype="multipart/form-data">
+<div class="container border mb-3 rounded" style="padding: 20px; background-color: white; max-width: 1000px;">
+	<form action="{{url('update_quiz/'.$this_quiz->quiz_id)}}" id="materi_form" method="post" enctype="multipart/form-data">
 		@csrf
 		<h5 class="mb-3">
 			Quiz
 			<span style="float: right; font-size: 14px; font-weight: normal;">
-				<button class="btn btn-sm btn-success">
+				<button class="btn btn-sm btn-primary">
 					Simpan <i class="bi bi-check-square"></i>
 				</button>
+				<a href="{{url('unpublish_quiz/'.$this_quiz->quiz_id)}}" class="btn btn-success btn-sm">
+					Publish <i class="ion-android-bulb"></i>
+				</a>
+				<button class="button orange-button">Warning button</button>
 			</span>
 		</h5>
 		<table class="table">
@@ -33,7 +37,7 @@
 					<div class="row">
 						<div class="col-md-6">
 							<div class="" style="position: relative;">
-								<input type="text" name="kelas" class="form-control form-control-sm" value="1" readonly="">
+								<input type="text" name="kelas" class="form-control form-control-sm" value="VusuSJ" readonly="">
 							</div>
 							<small class="text-muted">Pilih kelas dimana materi ini akan diberikan</small>
 						</div>

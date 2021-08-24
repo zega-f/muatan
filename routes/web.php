@@ -75,6 +75,10 @@ Route::get('quiz',[quizController::class,'index']);
 Route::post('store_quiz',[quizController::class,'store']);
 // edit quiz
 Route::get('edit_quiz/{quiz_id}',[quizController::class,'edit']);
+// update quiz
+Route::post('update_quiz/{id}',[quizController::class,'update']);
+// unpublish quiz
+Route::get('unpublish_quiz/{quiz_id}',[quizController::class,'unpublish']);
 
 // quiz component
 // store question
@@ -91,8 +95,20 @@ Route::get('delete_this_question',[subQuizController::class,'delete_this_questio
 Route::get('create_option',[subQuizController::class,'create_option']);
 // store option
 Route::post('store_option',[subQuizController::class,'store_option']);
+// delete option
+Route::get('delete_option',[subQuizController::class,'delete_option']);
+// edit option
+Route::get('edit_option',[subQuizController::class,'edit_option']);
+// update option
+Route::post('update_option',[subQuizController::class,'update_option']);
+// set as right answer
+Route::get('set_as_right_answer',[subQuizController::class,'set_as_right_answer']);
 // END QUIZ
 
 // COMMON
 // get kelas
 Route::get('get_all_kelas',[SiswaController::class,'get_all_kelas']);
+
+Route::get('component',function(){
+	return view('all_component');
+});

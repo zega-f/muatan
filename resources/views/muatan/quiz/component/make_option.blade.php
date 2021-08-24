@@ -28,14 +28,11 @@
 					$('#errorbag').html('<div class="alert alert-danger temp-alert">'+data['message']+'</div>')
 					$('.temp-alert').delay(3000).fadeOut();
 				}else{
-					var new_option = decodeURIComponent(data['option_text']);
-					$('#list'+question_id).append('<li class="option_text">'+new_option+'</li>');
+					// var new_option = decodeURIComponent(data['option_text']);
+					// $('#list'+question_id).append('<li class="option_text">'+new_option+'</li>');
+					$('#option_body'+question_id).html(data);
 					$('#option_create_box').remove();
 					$('#new_option_modal').hide();
-
-					$('.option_text').click(function(){
-						$(this).hide();
-					})
 				}
 			}
 		})

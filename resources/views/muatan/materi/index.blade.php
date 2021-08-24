@@ -31,18 +31,11 @@
 				<td>
 					<div class="row">
 						<div class="col-md-6">
-							<select class="form-control" id="kelas" name="kelas" required="">
-								<option value="" selected="">Pilih kelas</option>
-								@foreach($all_kelas as $kelas)
-								<option value="{{$kelas->id_kelas}}">{{$kelas->room_name}}</option>
-								@endforeach
-							</select>
+							<input type="text" name="kelas" required="" class="form-control" value="VusuSJ" readonly="">
 							<small class="text-muted">Pilih kelas dimana materi ini akan diberikan</small>
 						</div>
 						<div class="col-md-6">
-							<select class="form-control" id="mapel" name="mapel" required="" disabled="">
-								
-							</select>
+							<input type="text" name="mapel" required="" class="form-control" value="3" readonly="">
 							<small class="text-muted">Pilih mata pelajaran</small>
 						</div>
 					</div>

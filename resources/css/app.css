@@ -17,3 +17,206 @@ table{
 .cust-list li{
 	margin-left: -30px;
 }
+
+.button{
+	padding: 6px 20px;
+	transition: 0.5s;
+	border-radius: 5px;
+}
+
+.button-s{
+	padding: 4px 15px;
+	font-size: 12px;
+}
+
+.button-m{
+	padding: 6px 17px;
+	font-size: 12px;
+}
+
+.button-l{
+	padding: 8px 25px;
+	font-size: 16px;
+}
+
+.button-xl{
+	padding: 10px 30px;
+	font-size: 20px;
+}
+
+.button-xxl{
+	padding: 15px 40px;
+	font-size: 25px;
+}
+
+.button-block{
+	display: block;
+}
+
+.button:hover{
+	transition: 0.5s;
+	border-radius: 0;
+}
+.green-outline-button{
+	background-color: rgb(0,0,0,0);
+	color: green;
+	border: 1px solid green;
+}
+.green-outline-button:hover{
+	transition: 0.2s;
+	border: 1px solid green;
+	background-color: green;
+	color: white;
+}
+.green-outline-button:focus{
+	outline: none;
+	transition: 0.5s;
+}
+
+.blue-outline-button{
+	background-color: rgb(0,0,0,0);
+	color: blue;
+	border: 1px solid blue;
+}
+.blue-outline-button:hover{
+	transition: 0.2s;
+	border: 1px solid blue;
+	background-color: blue;
+	color: white;
+}
+.blue-outline-button:focus{
+	outline: none;
+	transition: 0.5s;
+}
+
+.red-outline-button{
+	background-color: rgb(0,0,0,0);
+	color: red;
+	border: 1px solid red;
+}
+.red-outline-button:hover{
+	transition: 0.2s;
+	border: 1px solid red;
+	background-color: red;
+	color: white;
+}
+.red-outline-button:focus{
+	outline: none;
+	transition: 0.5s;
+}
+
+.orange-outline-button{
+	background-color: rgb(0,0,0,0);
+	color: orange;
+	border: 1px solid orange;
+}
+
+.orange-outline-button:hover{
+	transition: 0.2s;
+	border: 1px solid orange;
+	background-color: orange;
+	color: white;
+}
+
+.orange-outline-button:focus{
+	outline: none;
+	transition: 0.5s;
+}
+
+.red-button{
+	background-color: red;
+	color: white;
+	border: 1px solid red;
+}
+.red-button:hover{
+	transition: 0.2s;
+	border: 1px solid #AA0000;
+	background-color: #AA0000;
+	color: white;
+}
+.red-button:focus{
+	outline: none;
+	transition: 0.5s;
+}
+
+.orange-button{
+	background-color: orange;
+	color: black;
+	border: 1px solid orange;
+}
+.orange-button:hover{
+	transition: 0.2s;
+	border: 1px solid #AA6E00;
+	background-color: #AA6E00;
+	color: white;
+}
+.orange-button:focus{
+	outline: none;
+	transition: 0.5s;
+}
+
+.green-button{
+	background-color: green;
+	color: white;
+	border: 1px solid green;
+}
+.green-button:hover{
+	transition: 0.2s;
+	border: 1px solid #005500;
+	background-color: #005500;
+	color: white;
+}
+.green-button:focus{
+	outline: none;
+	transition: 0.5s;
+}
+
+.blue-button{
+	background-color: blue;
+	color: white;
+	border: 1px solid blue;
+}
+.blue-button:hover{
+	transition: 0.2s;
+	border: 1px solid #0000AA;
+	background-color: #0000AA;
+	color: white;
+}
+.blue-button:focus{
+	outline: none;
+	transition: 0.5s;
+}
+
+.info-button{
+	background-color: #17A2B8;
+	color: white;
+	border: 1px solid #17A2B8;
+	border-radius: 5px;
+}
+.info-button:hover{
+	transition: 0.2s;
+	border: 1px solid #0F6C7A;
+	background-color: #0F6C7A;
+	color: white;
+}
+.info-button:focus{
+	outline: none;
+	transition: 0.5s;
+}
+
+.info-outline-button{
+	background-color: rgb(0,0,0,0);
+	color: #17A2B8;
+	border: 1px solid #17A2B8;
+	border-radius: 5px;
+}
+.info-outline-button:hover{
+	transition: 0.2s;
+	border: 1px solid #17A2B8;
+	background-color: #17A2B8;
+	color: white;
+}
+.info-outline-button:focus{
+	outline: none;
+	transition: 0.5s;
+}

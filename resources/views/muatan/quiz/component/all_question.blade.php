@@ -4,16 +4,9 @@
 		<button class="btn btn-info btn-sm mb-3" id="add_question">Pertanyaan <i class="ion-android-add"></i></button>
 	</span>
 </h5>
-<?php 
-	if (isset($this_quiz)) {
-		$quiz_id = $this_quiz->quiz_id;	
-	}
-
-	$all_question = DB::table('quiz_question')
-	->where('quiz_id',$quiz_id)
-	->get();
-	
-?>
+<div class="alert alert-danger" style="max-width: 500px; font-size: 14px;">
+	Pertanyaan tanpa jawaban benar tidak akan ditampilkan pada user dan tetap bernilai benar.
+</div>
 
 @if(count($all_question)==0)
 <div class="alert alert-info">Belum terdapat pertanyaan. Buat satu untuk memulai</div>
@@ -29,19 +22,7 @@
 				<?php echo $question->question; ?>
 			</div>
 			<div id="option_body{{$question->id}}">
-				<?php  
-					$all_option = DB::table('quiz_option')
-					->where([
-						['quiz_id',$quiz_id],
-						['quiz_question_id',$question->id]
-					])
-					->get();
-				?>
-				<ul id="list{{$question->id}}">
-					@foreach($all_option as $option)
-						<li class="option_text"><?php echo $option->option_text; ?></li>
-					@endforeach
-				</ul>
+				@include('muatan.quiz.component.option_list')
 			</div>
 		</div>
 	@endforeach
@@ -56,17 +37,12 @@
 </div>
 
 <div class="modal" id="add_question_modal">
-	<div class="container" style="padding: 20px; background-color: white;">
+	<div class="container" style="padding: 20px; background-color: white; max-width: 600px;">
 		<h5>New Question <span style="float: right;" class="ion-android-close pointer" id="close_add_question_modal"></span></h5>
+		<hr>
+		<div id="errorbag"></div>
 		<form id="question_form">
-			<table class="table">
-				<tr>
-					<td>Question</td>
-					<td>
-						<textarea name="question_field" id="question_field"></textarea>
-					</td>
-				</tr>
-			</table>
+			<textarea name="question_field" id="question_field"></textarea>
 			<button class="btn btn-info btn-sm" id="saving_question" type="button">Save</button>
 		</form>
 	</div>
@@ -80,9 +56,6 @@
   	CKEDITOR.config.allowedContent = true;
 </script>
 <script type="text/javascript">
-	$('.option_text').click(function(){
-		$(this).hide();
-	})
 	$('.add_option').click(function(){
 		var id = $(this).data('id');
 		$.ajax({
@@ -141,7 +114,10 @@
 				$('#add_question_modal').hide();
 				$('#question_form')[0].reset();
 				$('#question_box').html(data);
-			}
+			},
+		    error: function() { 
+		        $('#errorbag').html('<div class="alert alert-danger form-alert">Pertanyaan tidak boleh kosong</div>');
+		    } 
 		})
 	})
 	$('#add_question').click(function(){

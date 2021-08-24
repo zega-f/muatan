@@ -1,7 +1,7 @@
 @extends('muatan.layout')
 @section('content')
 <?php  
-	$materi_file = file_get_contents("materi/".$this_materi->id_materi.'.json');
+	$materi_file = file_get_contents("public/muatan/materi/".$this_materi->id_materi.'.json');
     $string = json_decode($materi_file,true);
 ?>
 <div class="container border mb-3 rounded" style="padding: 20px; background-color: white;">
@@ -38,18 +38,11 @@
 				<td>
 					<div class="row">
 						<div class="col-md-6">
-							<select class="form-control" id="kelas" name="kelas" required="">
-								<option value="{{$this_materi->id_kelas}}" selected="">{{$this_materi->room_name}}</option>
-								@foreach($all_kelas as $kelas)
-								<option value="{{$kelas->id_kelas}}">{{$kelas->room_name}}</option>
-								@endforeach
-							</select>
+							<input type="text" name="kelas" value="VusuSJ" readonly="" class="form-control">
 							<small class="text-muted">Pilih kelas dimana materi ini akan diberikan</small>
 						</div>
 						<div class="col-md-6">
-							<select class="form-control" id="mapel" name="mapel" required="">
-								@include('muatan.materi.component.all_mapel_comp')
-							</select>
+							<input type="text" name="mapel" value="3" readonly="" class="form-control">
 							<small class="text-muted">Pilih mata pelajaran</small>
 						</div>
 					</div>

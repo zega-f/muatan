@@ -82,14 +82,14 @@ class materiController extends Controller
     	])
     	->get();
 
-    	$this_class_mapel = DB::table('mapel_kelas')
-    	->join('tblmapel','mapel_kelas.mapel','=','tblmapel.id_mapel')
-    	->select('mapel_kelas.*','tblmapel.nama')
-    	->where([
-    		['mapel_kelas.kelas',$this_materi->id_kelas],
-    		['mapel_kelas.mapel','!=',$this_materi->mapel]
-    	])
-    	->get();
+    	// $this_class_mapel = DB::table('mapel_kelas')
+    	// ->join('tblmapel','mapel_kelas.mapel','=','tblmapel.id_mapel')
+    	// ->select('mapel_kelas.*','tblmapel.nama')
+    	// ->where([
+    	// 	['mapel_kelas.kelas',$this_materi->id_kelas],
+    	// 	['mapel_kelas.mapel','!=',$this_materi->mapel]
+    	// ])
+    	// ->get();
 
     	$all_kelas = DB::table('kelas')
     	->where('id_kelas','!=',$this_materi->id_kelas)
@@ -97,7 +97,7 @@ class materiController extends Controller
 
     	$type = 'edit';
 
-    	return view('muatan.materi.edit_materi',compact('this_materi','this_class_mapel','this_materi_lampiran','all_kelas','type'));
+    	return view('muatan.materi.edit_materi',compact('this_materi','this_materi_lampiran','all_kelas','type'));
     }
 
     public function update(Request $request, $id_materi)
