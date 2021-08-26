@@ -1,6 +1,6 @@
 @extends('muatan.layout')
 @section('content')
-<div class="container border mb-3 rounded" style="padding: 20px; background-color: white; max-width: 700px;">
+<div class="container border mb-3 rounded" style="padding: 20px; background-color: white;">
 	<form action="{{url('store_quiz')}}" id="materi_form" method="post" enctype="multipart/form-data">
 		@csrf
 		<h5 class="mb-3">

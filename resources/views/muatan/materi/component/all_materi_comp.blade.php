@@ -33,25 +33,6 @@ $all_materi = DB::table('coba_materi')
 	<div class="rounded" style="padding: 20px; background-color: white;">Sedang Memproses</div>
 </div>
 <script type="text/javascript">
-	$('.ion-trash-b').click(function(){
-		var id = $(this).data('id');
-		if (confirm('Apakah Anda yakin ingin menghapus materi ini? Menghapus materi akan menghapus semua lampiran dan file pendukung')) {
-			$('#prog_modal').css({
-				'display':'grid',
-				'place-items':'center',
-			});
-			$.ajax({
-				type : 'get',
-				url : '{{URL::to('delete_materi')}}',
-				data : {id_materi:id},
-				success:function(data)
-				{
-					$('#prog_modal').hide();
-					$('#materi_box').html(data);
-				}
-			})
-		}
-	})
 	$(document).ready(function(){
 		$('#materi_table').DataTable();
 	})

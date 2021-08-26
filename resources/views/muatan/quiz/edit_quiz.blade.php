@@ -9,10 +9,10 @@
 				<button class="btn btn-sm btn-primary">
 					Simpan <i class="bi bi-check-square"></i>
 				</button>
-				<a href="{{url('unpublish_quiz/'.$this_quiz->quiz_id)}}" class="btn btn-success btn-sm">
+				<a href="#" id="publish_this_quiz" class="btn btn-success btn-sm">
 					Publish <i class="ion-android-bulb"></i>
 				</a>
-				<button class="button orange-button">Warning button</button>
+				<!-- <button class="button orange-button" type="button" id="test_option">Warning button</button> -->
 			</span>
 		</h5>
 		<table class="table">
@@ -71,4 +71,122 @@
 		@include('muatan.quiz.component.all_question')
 	</div>
 </div>
+<div class="modal" id="add_question_modal">
+	<div class="container" style="padding: 20px; background-color: white; max-width: 600px;">
+		<h5>New Question <span style="float: right;" class="ion-android-close pointer" id="close_add_question_modal"></span></h5>
+		<hr>
+		<div id="errorbag"></div>
+		<form id="question_form">
+			<textarea name="question_field" id="question_field"></textarea>
+			<button class="btn btn-info btn-sm" id="saving_question" type="button">Save</button>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+	$('#publish_this_quiz').click(function(){
+		// e.preventDefault();
+		var new_url = "{{url('unpublish_quiz/'.$this_quiz->quiz_id)}}";
+		var need_answer = $('.need_option').length;
+		if (need_answer==0) {
+			$('#publish_this_quiz').attr("href",new_url);
+			$('#publish_this_quiz').click
+		}else{
+			alert('Terdapat soal tanpa jawaban.')
+		}
+	})
+
+	$('#test_option').click(function(){
+		var jumlah_soal = $('.question_body').length;
+		var jumlah_pilihan = $('.option-table').length;
+		var need_answer = $('.need_option').length;
+		console.log(jumlah_soal+' dan '+need_answer);
+	})
+
+	$('#question_box').on('click','.delete_this_question',function(){
+		var id = $(this).data('id');
+		if (confirm('Apakah Anda yakin ingin menghapus pertanyaan ini? Semua pilihan jawaban juga akan dihapus')) {
+			$.ajax({
+				type : 'get',
+				url : '{{URL::to('delete_this_question')}}',
+				data : {question_id:id},
+				success:function(data)
+				{
+					$('#question_container'+id).remove();
+				}
+			})
+		}
+	});
+
+	$('#question_box').on('click','.add_option',function(){
+		var id = $(this).data('id');
+		$.ajax({
+			type : 'get',
+			url : '{{URL::to('create_option')}}',
+			data : {question_id:id},
+			success:function(data)
+			{
+				$('#new_option_modal').css({
+					'display':'grid',
+					'place-items':'center',
+				}).html(data);
+			}
+		})
+	})
+
+	$('#question_box').on('click','.edit_this_question',function(){
+		var id = $(this).data('id');
+		$.ajax({
+			type : 'get',
+			url : '{{URL::to('edit_this_question')}}',
+			data : {question_id:id},
+			success:function(data)
+			{
+				$('#edit_question_modal').html(data).css({
+					'display':'grid',
+					'place-items':'center',
+				});
+			}
+		})
+	})
+
+	$('#saving_question').click(function(){
+		var quiz_id = '{{$quiz_id}}';
+		// var question = $('textarea[name="question_field"]').val();
+		var question = CKEDITOR.instances['question_field'].getData();
+		$.ajax({
+			type : 'post',
+			url : '{{URL::to('store_question')}}',
+			data : {'_token':"{{ csrf_token() }}",quiz_id:quiz_id,question:question},
+			success:function(data)
+			{
+				$('#add_question_modal').hide();
+				$('#question_form')[0].reset();
+				CKEDITOR.instances['question_field'].setData('');
+				$('#question_box').html(data);
+			},
+		    error: function() { 
+		        $('#errorbag').html('<div class="alert alert-danger form-alert">Pertanyaan tidak boleh kosong</div>');
+		    } 
+		})
+	})
+
+	$('#question_box').on('click','#add_question',function(){
+		$('#add_question_modal').css({
+			'display':'grid',
+			'place-items':'center',
+		});
+	})
+	$('#close_add_question_modal').click(function(){
+		$('#add_question_modal').hide();
+		$('#question_form')[0].reset();
+	})
+</script>
+
+<script type="text/javascript">
+	var konten = document.getElementById("question_field");
+	    CKEDITOR.replace(konten,{
+	    language:'en-gb'
+	  });
+  	CKEDITOR.config.allowedContent = true;
+</script>
 @endsection

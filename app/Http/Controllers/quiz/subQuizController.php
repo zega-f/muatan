@@ -80,12 +80,29 @@ class subQuizController extends Controller
 
             return response($response);
     	}else{
-    		DB::table('quiz_option')
-	    	->insert([
-	    		'quiz_id'=>$quiz_id,
-	    		'quiz_question_id'=>$request->question_id,
-	    		'option_text'=>$request->option,
-	    	]);
+            $first_option = DB::table('quiz_option')
+            ->where([
+                ['quiz_id',$quiz_id],
+                ['quiz_question_id',$request->question_id]
+            ])
+            ->count();
+
+            if ($first_option==0) {
+                DB::table('quiz_option')
+                ->insert([
+                    'quiz_id'=>$quiz_id,
+                    'quiz_question_id'=>$request->question_id,
+                    'option_text'=>$request->option,
+                    'benar'=>1,
+                ]);
+            }else{
+                DB::table('quiz_option')
+                ->insert([
+                    'quiz_id'=>$quiz_id,
+                    'quiz_question_id'=>$request->question_id,
+                    'option_text'=>$request->option,
+                ]);
+            }
 
             $question_id = $request->question_id;
 
@@ -142,5 +159,9 @@ class subQuizController extends Controller
         DB::table('quiz_option')
         ->where('id',$request->option_id)
         ->delete();
+
+        $question_id = $request->question_id;
+
+        return view('muatan.quiz.component.option_list',compact('question_id'));
     }
 }

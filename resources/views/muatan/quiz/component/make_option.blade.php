@@ -12,9 +12,6 @@
 		</form>
 </div>
 <script type="text/javascript">
-	$('body').on('keyup',function(){
-		console.log('a');
-	})
 	$('#saving_option').click(function(){
 		var option = CKEDITOR.instances['option_field'].getData();
 		var question_id = '{{$this_question->id}}';

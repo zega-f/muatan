@@ -188,15 +188,15 @@ table{
 }
 
 .info-button{
-	background-color: #17A2B8;
+	background-color: #29646D;
 	color: white;
-	border: 1px solid #17A2B8;
+	border: 1px solid #29646D;
 	border-radius: 5px;
 }
 .info-button:hover{
 	transition: 0.2s;
-	border: 1px solid #0F6C7A;
-	background-color: #0F6C7A;
+	border: 1px solid #1B4248;
+	background-color: #1B4248;
 	color: white;
 }
 .info-button:focus{
@@ -206,14 +206,14 @@ table{
 
 .info-outline-button{
 	background-color: rgb(0,0,0,0);
-	color: #17A2B8;
-	border: 1px solid #17A2B8;
+	color: #29646D;
+	border: 1px solid #29646D;
 	border-radius: 5px;
 }
 .info-outline-button:hover{
 	transition: 0.2s;
-	border: 1px solid #17A2B8;
-	background-color: #17A2B8;
+	border: 1px solid #29646D;
+	background-color: #29646D;
 	color: white;
 }
 .info-outline-button:focus{

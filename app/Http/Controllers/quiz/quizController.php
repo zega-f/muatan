@@ -70,16 +70,39 @@ class quizController extends Controller
 
         $status = $this_quiz->first()->status;
         $new_stat = 0;
-        if ($status==0) {
-            $new_stat = 1;
+
+        $this_quiz_question = DB::table('quiz_question')
+        ->where('quiz_id',$quiz_id)
+        ->get();
+
+        $need_answer = 0;
+        foreach ($this_quiz_question as $question) {
+            $option = DB::table('quiz_option')
+            ->where([
+                ['quiz_id',$quiz_id],
+                ['quiz_question_id',$question->id]
+            ])
+            ->count();
+
+            if ($option==0) {
+                $need_answer+=1;
+            }
         }
 
-        DB::table('quiz')
-        ->where('quiz_id',$quiz_id)
-        ->update([
-            'status'=>$new_stat
-        ]);
+        if ($need_answer==0) {
+            if ($status==0) {
+                $new_stat = 1;
+            }
 
-        return back();
+            DB::table('quiz')
+            ->where('quiz_id',$quiz_id)
+            ->update([
+                'status'=>$new_stat
+            ]);
+
+            return redirect()->route('edit_quiz',['quiz_id'=>$quiz_id]);
+        }else{
+            return redirect()->route('edit_quiz',['quiz_id'=>$quiz_id])->with('fail','Terdapat soal tanpa jawaban');
+        }
     }
 }

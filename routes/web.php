@@ -74,7 +74,7 @@ Route::get('quiz',[quizController::class,'index']);
 // store quiz
 Route::post('store_quiz',[quizController::class,'store']);
 // edit quiz
-Route::get('edit_quiz/{quiz_id}',[quizController::class,'edit']);
+Route::get('edit_quiz/{quiz_id}',[quizController::class,'edit'])->name('edit_quiz');
 // update quiz
 Route::post('update_quiz/{id}',[quizController::class,'update']);
 // unpublish quiz
@@ -111,4 +111,10 @@ Route::get('get_all_kelas',[SiswaController::class,'get_all_kelas']);
 
 Route::get('component',function(){
 	return view('all_component');
+});
+
+
+// TEST
+Route::get('test1',function(){
+	return view('test.test1');
 });
