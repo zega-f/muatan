@@ -14,11 +14,12 @@
 <script type="text/javascript">
 	$('#saving_option').click(function(){
 		var option = CKEDITOR.instances['option_field'].getData();
-		var question_id = '{{$this_question->id}}';
+		var question_id = '{{$this_question->question_id}}';
+		var id = '{{$this_question->id}}'
 		$.ajax({
 			type : 'post',
 			url : '{{URL::to('store_option')}}',
-			data : {'_token':'{{ csrf_token() }}',option:option,question_id:question_id},
+			data : {'_token':'{{ csrf_token() }}',option:option,question_id:id},
 			success:function(data)
 			{
 				if (data['type']=='fail') {
@@ -27,7 +28,7 @@
 				}else{
 					// var new_option = decodeURIComponent(data['option_text']);
 					// $('#list'+question_id).append('<li class="option_text">'+new_option+'</li>');
-					$('#option_body'+question_id).html(data);
+					$('#option_body'+question_id+'{{$quiz_id}}').html(data);
 					$('#option_create_box').remove();
 					$('#new_option_modal').hide();
 				}

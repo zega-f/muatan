@@ -24,10 +24,14 @@ use App\Http\Controllers\quiz\subQuizController;
 |
 */
 
-// change this route callback to materi_index
+
+Route::get('ui1',function(){
+	return view('test.ui1');
+});
 
 // MATERI
 // index materi
+// ***IMPORTANT** change this route callback to materi_index
 Route::get('/',[materiController::class,'index']);
 // check mapel pada table mapel_kelas
 Route::get('this_class_available_mapel',[subMateriController::class,'check_mapel']);
@@ -104,6 +108,7 @@ Route::post('update_option',[subQuizController::class,'update_option']);
 // set as right answer
 Route::get('set_as_right_answer',[subQuizController::class,'set_as_right_answer']);
 // END QUIZ
+
 
 // COMMON
 // get kelas

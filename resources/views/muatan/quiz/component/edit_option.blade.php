@@ -21,7 +21,7 @@
 			{
 				// var new_option_decoded = decodeURIComponent(new_option);
 				// $('#column'+option_id).html(new_option_decoded);
-				$('#option_body'+question_id).html(data);
+				$('#option_body'+question_id+'{{$this_option->quiz_id}}').html(data);
 				$('#option_edit_box').remove();
 				$('#editing_option_modal').hide();
 			}

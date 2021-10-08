@@ -1,9 +1,9 @@
 <?php 
 	$all_quiz = DB::table('quiz')
-	->join('kelas','quiz.room_id','=','kelas.id_kelas')
-	->join('tblmapel','quiz.mapel_id','=','tblmapel.id_mapel')
-	->select('quiz.*','kelas.room_name','tblmapel.nama as mapel_name')
-	->where('quiz.bab_id',0)
+	// ->join('kelas','quiz.room_id','=','kelas.id_kelas')
+	// ->join('tblmapel','quiz.mapel_id','=','tblmapel.id_mapel')
+	// ->select('quiz.*','kelas.room_name','tblmapel.nama as mapel_name')
+	// ->where('quiz.bab_id',0)
 	->get(); 
 ?>
 @if(count($all_quiz)==0)
@@ -15,8 +15,6 @@
 	<thead>
 		<tr>
 			<th>Nama Quiz</th>
-			<th>Kelas</th>
-			<th>Mapel</th>
 			<th>Action</th>
 		</tr>
 	</thead>
@@ -24,8 +22,6 @@
 		@foreach($all_quiz as $quiz)
 		<tr>
 			<td>{{$quiz->quiz_name}}</td>
-			<td>{{$quiz->room_name}}</td>
-			<td>{{$quiz->mapel_name}}</td>
 			<td>
 				<a href="{{url('show_quiz/'.$quiz->quiz_id)}}" class="btn btn-sm btn-secondary ion-eye"></a>
 				<a href="{{url('edit_quiz/'.$quiz->quiz_id)}}" class="btn btn-info btn-sm ion-edit"></a>

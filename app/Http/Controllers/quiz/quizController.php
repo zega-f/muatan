@@ -89,20 +89,25 @@ class quizController extends Controller
             }
         }
 
-        if ($need_answer==0) {
-            if ($status==0) {
-                $new_stat = 1;
-            }
-
-            DB::table('quiz')
-            ->where('quiz_id',$quiz_id)
-            ->update([
-                'status'=>$new_stat
-            ]);
-
-            return redirect()->route('edit_quiz',['quiz_id'=>$quiz_id]);
+        // check whether this quiz has question or not
+        if (count($this_quiz_question)<1) {
+            return redirect()->route('edit_quiz',['quiz_id'=>$quiz_id])->with('fail','Belum terdapat pertanyaan pada Quiz ini. Buat setidaknya satu pertanyaan untuk melanjutkan');
         }else{
-            return redirect()->route('edit_quiz',['quiz_id'=>$quiz_id])->with('fail','Terdapat soal tanpa jawaban');
+            if ($need_answer==0) {
+                if ($status==0) {
+                    $new_stat = 1;
+                }
+
+                DB::table('quiz')
+                ->where('quiz_id',$quiz_id)
+                ->update([
+                    'status'=>$new_stat
+                ]);
+
+                return redirect()->route('edit_quiz',['quiz_id'=>$quiz_id]);
+            }else{
+                return redirect()->route('edit_quiz',['quiz_id'=>$quiz_id])->with('fail','Terdapat soal tanpa jawaban');
+            }
         }
     }
 }
