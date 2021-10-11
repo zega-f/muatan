@@ -13,7 +13,7 @@ class subQuizController extends Controller
     /*
         store pertanyaan
         route : store_question
-        view : muatan.quiz.edit_quiz //save the question
+        from (view) : muatan.quiz.edit_quiz //save the question
         type : xhr
     */
     public function store_question(Request $request)
@@ -194,6 +194,12 @@ class subQuizController extends Controller
     	->delete();
     }
 
+    /*
+        open create option modal
+        route : create_option
+        from (view) : muatan.quiz.edit_quiz //make new option
+        type : xhr
+    */
     public function create_option(Request $request)
     {
     	$this_question = DB::table('quiz_question')->where('id',$request->question_id)->first();
@@ -201,13 +207,31 @@ class subQuizController extends Controller
     	return view('muatan.quiz.component.make_option',compact('this_question','quiz_id'));
     }
 
+    /*
+        store option for question
+        route : store_option
+        from (view) : muatan.quiz.component.make_option
+        type : xhr
+    */
     public function store_option(Request $request)
     {
+        // default directory for option attachment
+        $directory = 'public/muatan/quiz/lampiran_option/';
+
+        // question for this option
     	$this_quiz_question = DB::table('quiz_question')
     	->where('id',$request->question_id)
     	->first();
 
-        // print_r($this_quiz_question);
+        // get the img file
+        $file = $request->file('option_img');
+
+        if ($file) {
+            // name for the new file
+            $filename = Str::random(16).$file->getClientOriginalName();
+            // move the new file to directory
+            $file->move($directory,$filename);
+        }
 
     	if ($request->option==null) {
     		$response = array(
@@ -224,21 +248,33 @@ class subQuizController extends Controller
             ->count();
 
             if ($first_option==0) {
-                DB::table('quiz_option')
-                ->insert([
+                $values = array(
                     'quiz_id'=>$this_quiz_question->quiz_id,
                     'quiz_question_id'=>$this_quiz_question->question_id,
                     'option_text'=>$request->option,
                     'benar'=>1,
-                ]);
+                );
             }else{
-                DB::table('quiz_option')
-                ->insert([
+                $values = array(
                     'quiz_id'=>$this_quiz_question->quiz_id,
                     'quiz_question_id'=>$this_quiz_question->question_id,
                     'option_text'=>$request->option,
-                ]);
+                );
             }
+
+            /* 
+                if there is a new file then append the new value.
+            */
+            if ($file) {
+                $append_file = $values;
+                // append filename to the old array of value
+                $append_file['attachment'] = $filename;
+                $values = $append_file; 
+            }
+
+            // do the insert
+            DB::table('quiz_option')
+            ->insert($values);
 
             $question_id = $this_quiz_question->question_id;
             $quiz_id = $this_quiz_question->quiz_id;
@@ -247,6 +283,9 @@ class subQuizController extends Controller
     	}
     }
 
+    /*
+        show the option for edit
+    */
     public function edit_option(Request $request)
     {
         $this_option = DB::table('quiz_option')
@@ -274,6 +313,12 @@ class subQuizController extends Controller
         return view('muatan.quiz.component.option_list',compact('question_id','quiz_id'));
     }
 
+    /*
+        set this option as right answer
+        route : set_as_right_answer
+        from (view) : muatan.quiz.component.all_question //set as right answer
+        type : xhr
+    */
     public function set_as_right_answer(Request $request)
     {
         $this_option = DB::table('quiz_option')
@@ -296,11 +341,35 @@ class subQuizController extends Controller
         ]);
     }
 
+    /*
+        delete option 
+        route : delete_option
+        from (view) : muatan.quiz.component.all_question //delete option
+        type : xhr
+    */
     public function delete_option(Request $request)
     {
-        DB::table('quiz_option')
-        ->where('id',$request->option_id)
-        ->delete();
+        // default directory for option attachment
+        $directory = 'public/muatan/quiz/lampiran_option/';
+
+        // get the option detail
+        $this_option = DB::table('quiz_option')
+        ->where('id',$request->option_id);
+
+        // get the filename from option detail
+        $filename = $this_option->first()->attachment;
+
+        // if there is an attachment then delete the file
+        if ($filename) {
+            // if file exists then delete the file
+            if (File::exists($directory.$filename)) {
+                // deleting file
+                File::delete($directory.$filename);
+            }
+        }
+        
+        // deleting the record
+        $this_option->delete();
 
         $question_id = $request->question_id;
 

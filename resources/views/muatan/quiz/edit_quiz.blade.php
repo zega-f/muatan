@@ -163,6 +163,7 @@
 		}
 	});
 
+	// make new option
 	$('#question_box').on('click','.add_option',function(){
 		var id = $(this).data('id');
 		$.ajax({

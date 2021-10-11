@@ -14,10 +14,11 @@
 	@foreach($all_question as $question)
 		<div class="mb-3 border rounded question_body" id="question_container{{$question->id}}" style="padding: 20px; background-color: white; font-size: 16px;">
 			<header class="mb-3" style="text-align: right;">
-				<button class="btn btn-sm btn-info ion-edit edit_this_question" data-id="{{$question->id}}" data-toggle="tooltip" data-placement="bottom" title="Edit question"></button>
+				<!-- <button class="btn btn-sm btn-info ion-edit edit_this_question" data-id="{{$question->id}}" data-toggle="tooltip" data-placement="bottom" title="Edit question"></button> -->
 				<button class="btn btn-sm btn-success ion-android-add add_option" data-id="{{$question->id}}" data-toggle="tooltip" data-placement="bottom" title="Add Option"></button>
 				<button class="btn btn-sm btn-danger ion-trash-b delete_this_question" data-id="{{$question->id}}" data-toggle="tooltip" data-placement="bottom" title="Delete Question"></button>
 			</header>
+			<hr>
 			<div id="question_body{{$question->id}}">
 				<?php  
 					$check_attachment = DB::table('quiz_question_attachment')
@@ -28,15 +29,21 @@
 					->first();
 				?>
 				@if($check_attachment)
-				<a href="{{url('public/muatan/quiz/lampiran/'.$check_attachment->filename)}}">
-					<img src="{{url('public/muatan/quiz/lampiran/'.$check_attachment->filename)}}" width="300" style="margin: 0 auto; display: block;">
+				<header><b>Attachment : </b></header>
+				<a href="{{url('public/muatan/quiz/lampiran/'.$check_attachment->filename)}}" style="text-align: center;">
+					<img src="{{url('public/muatan/quiz/lampiran/'.$check_attachment->filename)}}" width="300" style=" display: block;">
 				</a>
+
 				@endif
-				<?php
-					echo $question->question; 
-				?>
+				<div>
+					<header><b>Question <i class="pointer ion-edit edit_this_question" data-id="{{$question->id}}" data-toggle="tooltip" data-placement="bottom" title="Edit question" style="display: inline;"></i> : </b></header>
+					<?php
+						echo $question->question; 
+					?>
+				</div>
 			</div>
 			<div id="option_body{{$question->question_id}}{{$quiz_id}}">
+				<header><b>Choice : </b></header>
 				@include('muatan.quiz.component.option_list')
 			</div>
 		</div>
@@ -57,6 +64,7 @@
 				})
 			})
 
+			// delete option
 			$('#option_body{{$question->question_id}}{{$quiz_id}}').on('click','.delete-option{{$question->question_id}}{{$quiz_id}}',function(){
 				var id = $(this).data('id');
 				var question_id = $(this).data('question');
@@ -72,6 +80,7 @@
 				})
 			})
 
+			// set as right answer
 			$('#option_body{{$question->question_id}}{{$quiz_id}}').on('click','.option_radio{{$question->question_id}}{{$quiz_id}}',function(e){
 				e.preventDefault();
 				var id = $(this).data('id');

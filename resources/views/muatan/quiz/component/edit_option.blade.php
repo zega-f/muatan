@@ -1,8 +1,14 @@
 <div class="container shadow" id="option_edit_box" style="max-width: 800px; padding: 20px; background-color: white;">
 	<h5>Edit Option <span style="float: right;" class="ion-android-close pointer" id="close_option_edit_box"></span></h5>
 	<hr>
-		<form>
+		<form style="max-height: 70vh; overflow: auto;">
 			<div id="errorbag"></div>
+			<?php $default = url('public/muatan/quiz/lampiran_option/'.$this_option->attachment);?>
+			<div class="form-group mb-3">
+				<header>Gambar Ilustrasi</header>
+				<img src="{{$default}}" style="max-width: 375px; position: relative;" id="blah">
+				<input type="file" name="option_img" id="file" accept="image/png, image/gif, image/jpeg" class="form-control-file form-control-sm" onchange="readURL(this);">
+			</div>
 			<textarea name="option_edit_field" id="option_edit_field">{{$this_option->option_text}}</textarea>
 			<button class="btn btn-info btn-sm mt-2" id="updating_option" type="button">Save</button>
 		</form>
