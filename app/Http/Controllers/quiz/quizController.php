@@ -76,24 +76,44 @@ class quizController extends Controller
         ->get();
 
         $need_answer = 0;
+        $need_right_answer = 0;
+        // mencari quiz yang belum mempunyai jawaban
         foreach ($this_quiz_question as $question) {
             $option = DB::table('quiz_option')
             ->where([
                 ['quiz_id',$quiz_id],
-                ['quiz_question_id',$question->id]
+                ['quiz_question_id',$question->question_id]
             ])
             ->count();
+
+            $right_option = DB::table('quiz_option')
+            ->where([
+                ['quiz_id',$quiz_id],
+                ['quiz_question_id',$question->question_id],
+                ['benar',1]
+            ])
+            ->count();
+
+            if ($right_option==0) {
+                $need_right_answer+=1;
+            }
 
             if ($option==0) {
                 $need_answer+=1;
             }
         }
 
-        // check whether this quiz has question or not
+        /*
+            check apakah quiz ini sudah memiliki jawaban atau belum
+            if pertanyaan < 1 then return back();
+            else check pertanyaan butuh jawaban dan pertanyaan butuh jawaban benar
+        */
         if (count($this_quiz_question)<1) {
-            return redirect()->route('edit_quiz',['quiz_id'=>$quiz_id])->with('fail','Belum terdapat pertanyaan pada Quiz ini. Buat setidaknya satu pertanyaan untuk melanjutkan');
+            return back()->with('fail','Belum terdapat pertanyaan pada Quiz ini. Buat setidaknya satu pertanyaan untuk melanjutkan');
         }else{
-            if ($need_answer==0) {
+            // check need_answer dan need_right_answer. Keduanya harus bernilai true
+            if ($need_answer==0 && $need_right_answer==0) {
+                $msg = 'Terdapat soal tanpa jawaban atau terdapat soal tanpa jawaban benar.';
                 if ($status==0) {
                     $new_stat = 1;
                 }
@@ -106,7 +126,7 @@ class quizController extends Controller
 
                 return redirect()->route('edit_quiz',['quiz_id'=>$quiz_id]);
             }else{
-                return redirect()->route('edit_quiz',['quiz_id'=>$quiz_id])->with('fail','Terdapat soal tanpa jawaban');
+                return redirect()->route('edit_quiz',['quiz_id'=>$quiz_id])->with('fail',$msg);
             }
         }
     }

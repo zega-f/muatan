@@ -10,8 +10,15 @@ use DB;
 
 class subQuizController extends Controller
 {
+    /*
+        store pertanyaan
+        route : store_question
+        view : muatan.quiz.edit_quiz //save the question
+        type : xhr
+    */
     public function store_question(Request $request)
     {
+        // get the last question id of this quiz
         $this_quiz_question = DB::table('quiz_question')
         ->where([
             ['quiz_id',$request->quiz_id]
@@ -19,8 +26,13 @@ class subQuizController extends Controller
         ->orderBy('id','DESC')
         ->first();
 
+        // define the file
         $file = $request->file('img');
 
+        /* 
+            check the latest question id
+            if $this_quiz_question, $question_id+1;
+        */
         if ($this_quiz_question) {
             $question_id = $this_quiz_question->question_id+1;
         }else{
@@ -57,12 +69,15 @@ class subQuizController extends Controller
     	return view('muatan.quiz.component.all_question',compact('quiz_id','all_question'));
     }
 
+    /*
+        get selected question by question_id and show for edit
+    */
     public function edit_this_question(Request $request)
     {
-    	$this_question = DB::table('quiz_question')->where('id',$request->question_id)->first();
-    	// print_r($this_question);
+    	$this_question = DB::table('quiz_question')->where('id',$request->id)->first();
     	return view('muatan.quiz.component.edit_this_question',compact('this_question'));
     }
+
 
     /* 
         update pertanyaan 

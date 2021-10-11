@@ -5,7 +5,8 @@
 	<div style="font-size: 14px;">
 		<?php echo $this_question->question; ?>
 	</div>
-		<form>
+		<form id="option_form" enctype="multipart/form-data">
+			@csrf
 			<div id="errorbag"></div>
 			<textarea name="option_field" id="option_field"></textarea>
 			<button class="btn btn-info btn-sm mt-2" id="saving_option" type="button">Save</button>

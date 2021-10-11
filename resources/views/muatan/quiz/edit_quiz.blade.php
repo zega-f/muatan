@@ -132,7 +132,8 @@
 		// e.preventDefault();
 		var new_url = "{{url('unpublish_quiz/'.$this_quiz->quiz_id)}}";
 		var need_answer = $('.need_option').length;
-		if (need_answer==0) {
+		var need_right_answer = $('.need_right_option').length;
+		if (need_answer==0 && need_right_answer==0) {
 			$('#publish_this_quiz').attr("href",new_url);
 			$('#publish_this_quiz').click
 		}else{
@@ -183,7 +184,7 @@
 		$.ajax({
 			type : 'get',
 			url : '{{URL::to('edit_this_question')}}',
-			data : {question_id:id},
+			data : {id:id},
 			success:function(data)
 			{
 				$('#edit_question_modal').html(data).css({
@@ -194,6 +195,7 @@
 		})
 	})
 
+	// save the question
 	$('#saving_question').click(function(){
 		var quiz_id = '{{$quiz_id}}';
 		var question = CKEDITOR.instances['question_field'].getData();

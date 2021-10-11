@@ -34,11 +34,11 @@
 	@endforeach
 </table>
 
-@if($right_answer==0)
-<div class="alert alert-danger" style="display: inline-block;">
-	Belum terdapat jawaban benar
-</div>
-@endif
+	@if($right_answer==0)
+	<div class="alert alert-danger need_right_option" style="display: inline-block;">
+		Belum terdapat jawaban benar
+	</div>
+	@endif
 
 @else
 <div class="alert alert-danger need_option">

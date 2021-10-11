@@ -56,42 +56,55 @@
 			</td>
 		</tr>
 	</table>
-	@if(count($all_question)==0)
-	<div class="alert alert-info">Belum terdapat pertanyaan. Buat satu untuk memulai</div>
-	@else
-		@foreach($all_question as $question)
-			<div class="mb-3 border rounded question_body" id="question_container{{$question->id}}" style="padding: 20px; font-size: 14px;">
-				<div id="question_body{{$question->id}}">
-					<?php echo $question->question; ?>
-				</div>
-				<div id="option_body{{$question->id}}">
-					<?php
-						if (isset($all_question)) {
-							$question_id = $question->id;
-						}
-
-						$all_option = DB::table('quiz_option')
-						->where([
-							['quiz_question_id',$question_id]
-						])
-						->get();
-						
-					?>
-					<table class="table" style="border: none;">
-						@foreach($all_option as $option)
-							<tr class="option_text" id="option_text{{$option->id}}" style="position: relative;">
-								<td id="column{{$option->id}}"><?php echo $option->option_text; ?></td>
-								<td style="width: 50px;">
-									@if($option->benar==1)
-									<div class="badge badge-success">Benar</div>
-									@endif
-								</td>
-							</tr>
-						@endforeach
-					</table>
-				</div>
-			</div>
-		@endforeach
-	@endif
 </div>
+@if(count($all_question)==0)
+<div class="alert alert-info">Belum terdapat pertanyaan. Buat satu untuk memulai</div>
+@else
+	@foreach($all_question as $question)
+		<div class="container mb-3 border rounded question_body" id="question_container{{$question->id}}" style="padding: 20px; font-size: 14px; max-width: 1000px; background-color: white;">
+			<div id="question_body{{$question->id}}">
+				<?php  
+				$check_attachment = DB::table('quiz_question_attachment')
+					->where([
+						['quiz_id',$quiz_id],
+						['question_id',$question->question_id]
+					])
+					->first();
+				?>
+				@if($check_attachment)
+				<a href="{{url('public/muatan/quiz/lampiran/'.$check_attachment->filename)}}">
+					<img src="{{url('public/muatan/quiz/lampiran/'.$check_attachment->filename)}}" width="300" style="margin: 0 auto; display: block;">
+				</a>
+				@endif
+				<?php echo $question->question; ?>
+			</div>
+			<div id="option_body{{$question->id}}">
+				<?php
+					if (isset($all_question)) {
+						$question_id = $question->question_id;
+					}
+
+					$all_option = DB::table('quiz_option')
+					->where([
+						['quiz_question_id',$question_id]
+					])
+					->get();
+					
+				?>
+				<table class="table" style="border: none;">
+					@foreach($all_option as $option)
+						<tr class="option_text" id="option_text{{$option->id}}" style="position: relative;">
+							<td id="column{{$option->id}}"><?php echo $option->option_text; ?></td>
+							<td style="width: 50px;">
+								@if($option->benar==1)
+								<div class="badge badge-success">Benar</div>
+								@endif
+							</td>
+						</tr>
+					@endforeach
+				</table>
+			</div>
+		</div>
+	@endforeach
+@endif
 @endsection
