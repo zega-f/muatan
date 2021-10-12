@@ -93,6 +93,8 @@ Route::get('edit_this_question',[subQuizController::class,'edit_this_question'])
 Route::post('updating_question',[subQuizController::class,'update_this_question']);
 // delete question
 Route::get('delete_this_question',[subQuizController::class,'delete_this_question']);
+// delete question lampiran
+Route::post('delete_question_lampiran',[subQuizController::class,'delete_question_lampiran']);
 
 // option
 // create option
@@ -105,6 +107,8 @@ Route::get('delete_option',[subQuizController::class,'delete_option']);
 Route::get('edit_option',[subQuizController::class,'edit_option']);
 // update option
 Route::post('update_option',[subQuizController::class,'update_option']);
+// delete option attachment
+Route::post('delete_this_option_attch',[subQuizController::class,'delete_this_option_attch']);
 // set as right answer
 Route::get('set_as_right_answer',[subQuizController::class,'set_as_right_answer']);
 // END QUIZ
@@ -121,5 +125,6 @@ Route::get('component',function(){
 
 // TEST
 Route::get('test1',function(){
-	return view('test.test1');
+	return view('test.copytext');
+	// return view('test.test1');
 });

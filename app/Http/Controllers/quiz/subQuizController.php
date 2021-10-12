@@ -41,7 +41,7 @@ class subQuizController extends Controller
 
         if ($file) {
             $directory = 'public/muatan/quiz/lampiran/';
-            $filename = Str::random(16).$file->getClientOriginalName();
+            $filename = Str::random(16).str_replace(' ', '', $file->getClientOriginalName());
             DB::table('quiz_question_attachment')
             ->insert([
                 'quiz_id'=>$request->quiz_id,
@@ -77,7 +77,6 @@ class subQuizController extends Controller
     	$this_question = DB::table('quiz_question')->where('id',$request->id)->first();
     	return view('muatan.quiz.component.edit_this_question',compact('this_question'));
     }
-
 
     /* 
         update pertanyaan 
@@ -135,9 +134,15 @@ class subQuizController extends Controller
 
             $file->move($directory,$new_filename);
 
+            $old_img_id = explode('.', $this_question_attachment->filename);
+
+            $new_img_id = explode('.', $new_filename);
+
             $response = [
                 'msg'=>'new_file',
                 'src'=>$new_filename,
+                'old_img_id'=>$old_img_id[0],
+                'new_img_id'=>$new_img_id[0],
             ];
         }else{
             $response = ['msg'=>'no_file'];
@@ -192,6 +197,41 @@ class subQuizController extends Controller
     	DB::table('quiz_question')
     	->where('id',$request->question_id)
     	->delete();
+    }
+
+    public function delete_question_lampiran(Request $request)
+    {
+        $directory = 'public/muatan/quiz/lampiran/';
+
+        $this_question = DB::table('quiz_question')
+        ->where('id',$request->id)
+        ->first();
+
+        $this_question_attachment = DB::table('quiz_question_attachment')
+        ->where([
+            ['quiz_id',$this_question->quiz_id],
+            ['question_id',$this_question->question_id]
+        ])
+        ->first();
+
+        $filename = $this_question_attachment->filename;
+
+        // if (File::exists($directory.$filename)) {
+        //     File::delete($directory.$filename);
+        // }
+
+        // DB::table('quiz_question_attachment')
+        // ->where([
+        //     ['quiz_id',$this_question->quiz_id],
+        //     ['question_id',$this_question->question_id]
+        // ])
+        // ->delete();
+
+        $filename_ = explode('.', $filename);
+
+        $response = array('filename' => $filename_[0]);
+
+        return response($response);
     }
 
     /*
@@ -295,22 +335,88 @@ class subQuizController extends Controller
         return view('muatan.quiz.component.edit_option',compact('this_option'));
     }
 
+    /*
+        update option
+        route : update_option
+        from (view) : muatan.quiz.component.edit_option
+        type : xhr
+    */
     public function update_option(Request $request)
     {
+        $directory = 'public/muatan/quiz/lampiran_option/';
+
         $this_option = DB::table('quiz_option')
         ->where('id',$request->option_id)
         ->first();
 
+        $file = $request->file('edit_option_img');
+
+        if ($file) {
+            // name for new image
+            $new_filename = Str::random(16).$file->getClientOriginalName();
+
+            // check the image on directory. if exists then delete
+            if (File::exists($directory.$this_option->attachment)) {
+                File::delete($directory.$this_option->attachment);
+            }
+
+            // move the file
+            $file->move($directory,$new_filename);
+
+            $values = array(
+                'option_text'=>$request->option_edit_field,
+                'attachment'=>$new_filename,
+            );
+        }else{
+            $values = array( 'option_text'=>$request->option_edit_field);
+        }
+
+        // update this option with new values
         $this_option_update = DB::table('quiz_option')
         ->where('id',$request->option_id)
-        ->update([
-            'option_text'=>$request->new_option
-        ]);
+        ->update($values);
 
         $question_id = $request->question_id;
         $quiz_id = $this_option->quiz_id;
 
         return view('muatan.quiz.component.option_list',compact('question_id','quiz_id'));
+    }
+    
+    /*
+        delete option attachment
+        route : delete_this_option_attch
+        from (view) : muatan.quiz.component.edit_option
+        type : xhr
+
+    */
+    public function delete_this_option_attch(Request $request)
+    {
+        // default directory for option attachment
+        $directory = 'public/muatan/quiz/lampiran_option/';
+
+        $this_option = DB::table('quiz_option')
+        ->where('id',$request->option_id)
+        ->first();
+
+        if (File::exists($directory.$this_option->attachment)) {
+            File::delete($directory.$this_option->attachment);
+        }
+
+        DB::table('quiz_option')
+        ->where('id',$request->option_id)
+        ->update([
+            'attachment'=>null,
+        ]);
+
+        // take only the first index to remove the ext
+        $img_id = explode('.', $this_option->attachment);
+
+        // use this response to find image in html then remove the image
+        $response = array(
+            'filename' => $img_id[0], 
+        );
+
+        return response($response);
     }
 
     /*

@@ -1,7 +1,7 @@
 <h5 class="mb-3">
 	Pertanyaan 
 	<span style="float: right;">
-		<button class="btn btn-info btn-sm mb-3" id="add_question">Pertanyaan <i class="ion-android-add"></i></button>
+		<button class="btn btn-info btn-sm mb-3" data-toggle="modal" data-target="#add_question_modal">Pertanyaan <i class="ion-android-add"></i></button>
 	</span>
 </h5>
 <!-- <div class="alert alert-danger" style="max-width: 500px; font-size: 14px;">
@@ -19,7 +19,7 @@
 				<button class="btn btn-sm btn-danger ion-trash-b delete_this_question" data-id="{{$question->id}}" data-toggle="tooltip" data-placement="bottom" title="Delete Question"></button>
 			</header>
 			<hr>
-			<div id="question_body{{$question->id}}">
+			<div>
 				<?php  
 					$check_attachment = DB::table('quiz_question_attachment')
 					->where([
@@ -27,19 +27,29 @@
 						['question_id',$question->question_id]
 					])
 					->first();
+
+					$question_img_id = explode('.', $check_attachment->filename);
 				?>
 				@if($check_attachment)
 				<header><b>Attachment : </b></header>
-				<a href="{{url('public/muatan/quiz/lampiran/'.$check_attachment->filename)}}" style="text-align: center;">
-					<img src="{{url('public/muatan/quiz/lampiran/'.$check_attachment->filename)}}" width="300" style=" display: block;">
-				</a>
+				<div id="question-lampiran{{$question->id}}">
+					<img 
+						src="{{url('public/muatan/quiz/lampiran/'.$check_attachment->filename)}}" 
+						width="200" 
+						style="display: block;" 
+						class="preview-question-img pointer" 
+						data-url="{{url('public/muatan/quiz/lampiran/'.$check_attachment->filename)}}" id="img{{$question_img_id[0]}}"
+						>
+				</div>
 
 				@endif
 				<div>
 					<header><b>Question <i class="pointer ion-edit edit_this_question" data-id="{{$question->id}}" data-toggle="tooltip" data-placement="bottom" title="Edit question" style="display: inline;"></i> : </b></header>
-					<?php
-						echo $question->question; 
-					?>
+					<div id="question_body{{$question->id}}">
+						<?php
+							echo $question->question; 
+						?>
+					</div>
 				</div>
 			</div>
 			<div id="option_body{{$question->question_id}}{{$quiz_id}}">
@@ -48,6 +58,15 @@
 			</div>
 		</div>
 		<script type="text/javascript">
+			$('#question-lampiran{{$question->id}}').on('click','.preview-question-img', function(){
+				var url = $(this).data('url');
+				$('#preview-img').attr('src',url);
+				$('#preview-img-modal').css({
+					'display':'grid',
+					'place-items':'center',
+				});
+			});
+
 			$('#option_body{{$question->question_id}}{{$quiz_id}}').on('click','.edit-option{{$question->question_id}}{{$quiz_id}}',function(){
 				var id = $(this).data('id');
 				$.ajax({
@@ -110,3 +129,30 @@
 <div class="modal" id="new_option_modal">
 	
 </div>
+
+<div class="modal" id="preview-img-modal">
+	<div class="rounded shadow" style="position: relative; background-color: white;">
+		<span class="ion-close-circled text-danger pointer close-preview" style="position: absolute; top: 30px; right: 50px; font-size: 2rem;"></span>
+		<img src="" id="preview-img" style="max-height: 80vh; margin: 0 auto; display: block;">
+	</div>
+</div>
+
+<script type="text/javascript">
+	$('#preview-img-modal').click(function(e){
+		if ($(e.target).is('#preview-img-modal')) {
+			$('#preview-img-modal').fadeOut();
+		}
+	})
+
+	$('.close-preview').click(function(){
+		$('#preview-img-modal').hide();
+	})
+
+	// $('#coms_modal').click(function(e){
+	// 	var coms = $('.coms_box');
+	// 	if ($(e.target).is('#coms_modal')) {
+	// 		$('#coms_modal').fadeOut();
+	// 		// console.log('inside');
+	// 	}
+	// })
+</script>

@@ -19,12 +19,14 @@
 		if ($option->benar==1) {
 			$right_answer+=1;
 		}
+
+		$img_id = explode('.', $option->attachment);
 	?>
 		<tr id="option_text{{$option->id}}" style="position: relative; font-size: 14px;">
 			<td id="column{{$option->id}}">
 				<div class="option-text">
 					@if($option->attachment!=null)
-					<img src="{{url('public/muatan/quiz/lampiran_option/'.$option->attachment)}}" style="max-width: 100px; background-color: none;">
+					<img src="{{url('public/muatan/quiz/lampiran_option/'.$option->attachment)}}" style="max-width: 100px; background-color: none;" class="img{{$img_id[0]}}">
 					@endif
 					<div>
 						<?php echo $option->option_text; ?>

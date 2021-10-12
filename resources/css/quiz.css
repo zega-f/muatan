@@ -1,3 +1,18 @@
+.preview-question-img{
+	transition: 0.5s;
+}
+.preview-question-img:hover{
+	transition: 0.5s;
+	background-color: rgb(0,0,0,0.2);
+	border-radius: 5px;
+}
+
+.grid-modal{
+	display: grid;
+	place-items:center;
+	display: block;
+}
+
 .question-text{
 	font-size: 15px;
 }

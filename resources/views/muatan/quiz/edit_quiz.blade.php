@@ -81,22 +81,32 @@
 <div id="question_box" class="container" style="max-width: 1000px; padding: 0;">
 	@include('muatan.quiz.component.all_question')
 </div>
-<div class="modal" id="add_question_modal">
-	<div class="container" style="padding: 20px; background-color: white; max-width: 600px;">
-		<h5>New Question <span style="float: right;" class="ion-android-close pointer" id="close_add_question_modal"></span></h5>
-		<hr>
-		<div id="errorbag"></div>
-		<form id="question_form" style="max-height: 400px; overflow: auto;" enctype="multipart/form-data">
-			@csrf
-			<input type="text" name="quiz_id" hidden="" value="{{$quiz_id}}">
-			<div class="form-group mb-3">
-				<label>Gambar Ilustrasi</label>
-				<img src="" style="width: 100%; position: relative;" id="blah">
-				<input type="file" name="img" id="file" accept="image/png, image/gif, image/jpeg" class="form-control-file form-control-sm" onchange="readURL(this);">
-			</div>
-			<textarea name="question_field" id="question_field"></textarea>
-			<button class="btn btn-info btn-sm" id="saving_question" type="button">Save</button>
-		</form>
+<div class="modal fade" id="add_question_modal">
+	<div class="modal-dialog" role="document" style="max-width: 600px;">
+		<div class="modal-content" style="background-color: white;">
+			<div id="errorbag"></div>
+			<div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLabel">New question</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+			<form id="question_form" enctype="multipart/form-data">
+				<div class="modal-body">
+					@csrf
+					<input type="text" name="quiz_id" hidden="" value="{{$quiz_id}}">
+					<div class="form-group mb-3">
+						<label>Gambar Ilustrasi</label>
+						<img src="" style="width: 100%; position: relative;" id="blah">
+						<input type="file" name="img" id="file" accept="image/png, image/gif, image/jpeg" class="form-control-file form-control-sm" onchange="readURL(this);">
+					</div>
+					<textarea name="question_field" id="question_field"></textarea>
+		      	</div>
+		      	<div class="modal-footer">
+		      		<button class="btn btn-info btn-sm" id="saving_question" type="button">Save</button>
+		      	</div>
+	      	</form>
+		</div>
 	</div>
 </div>
 <script type="text/javascript">
@@ -224,12 +234,13 @@
 		})
 	})
 
-	$('#question_box').on('click','#add_question',function(){
-		$('#add_question_modal').css({
-			'display':'grid',
-			'place-items':'center',
-		});
-	})
+	// $('#question_box').on('click','#add_question',function(){
+	// 	$('#add_question_modal').css({
+	// 		'display':'grid',
+	// 		'place-items':'center',
+	// 	});
+	// })
+
 	$('#close_add_question_modal').click(function(){
 		CKEDITOR.instances['question_field'].setData('');
 		$('#add_question_modal').hide();

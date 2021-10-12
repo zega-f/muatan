@@ -19,6 +19,10 @@
 			$default = url('public/muatan/quiz/lampiran/'.$check_attachment->filename);
 		?>
 		<div style="position: relative;">
+			<label>Gambar Ilustrasi</label>
+			@if($check_attachment)
+				<i class="pointer ion-trash-b text-danger delete-question-lampiran" data-questionid="{{$this_question->id}}"></i>
+			@endif
 			<img src="{{url('public/muatan/quiz/lampiran/'.$check_attachment->filename)}}" width="300" style="margin: 0 auto; display: block;" id="edit_preview">
 			<div style="position: absolute; top: 20px; right: 20px; display: none;" id="yesno">
 				<span style="font-size: 2rem; right: 30px; color: red;" class="yn ion-close-circled pointer no"></span>
@@ -26,7 +30,6 @@
 		</div>
 		@endif
 		<div class="form-group mb-3">
-			<label>Gambar Ilustrasi</label>
 			<input type="file" name="img_edit" id="file_edit" accept="image/png, image/gif, image/jpeg" class="form-control-file form-control-sm" onchange="readURL_edit(this);">
 		</div>
 		<textarea name="edit_question_field" id="edit_question_field"><?php echo $this_question->question; ?></textarea>
@@ -34,6 +37,23 @@
 	</form>
 </div>
 <script type="text/javascript">
+	$('.delete-question-lampiran').click(function(){
+		if (confirm('Apakah Anda yakin ingin menghapus lampiran untuk pilihan jawaban ini?')) {
+			// $('.delete-question-lampiran').remove();
+			var question_id = $(this).data('questionid');
+			$.ajax({
+				type : 'post',
+				url : '{{URL::to('delete_question_lampiran')}}',
+				data : {'_token':'{{ csrf_token() }}',id:question_id},
+				success:function(data)
+				{
+					console.log(data['filename']);
+					// $('#edit_preview').attr('src','');
+				}
+			})
+		}
+	});
+
 	function readURL_edit(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
@@ -66,10 +86,12 @@
     	$('#file_edit').val('');
     	$('#edit_preview').attr('src', '{{$default}}')
     })
+
 	$('#updating_question').click(function(){
 		var quiz_id = '{{$this_question->quiz_id}}';   
 		var id = '{{$this_question->id}}';
 		var new_question = CKEDITOR.instances['edit_question_field'].getData();
+		
 		let formEdit = document.getElementById('edit_question_form');
 		let formEditData = new FormData(formEdit);
 	    formEditData.append('edit_question_field', new_question);
@@ -80,16 +102,17 @@
 			data : formEditData,
 			success:function(data)
 			{
-
 				$('#question_body'+id).html(new_question);
 				$('#edit_question_modal').hide();
 				$('#question_editor_box').remove();
+
 				if (data.msg=='new_file') {
+					$('#img'+data.old_img_id).remove();
 					var baseurl = '{{url('')}}';
 					var url = baseurl+'/public/muatan/quiz/lampiran/'+data.src;
-					$('#question_body'+id).prepend('<img width="300" src='+url+' style="margin: 0 auto; display: block;">')
-					console.log(url);
+					$('#question-lampiran'+id).html('<img width="300" class="preview-question-img pointer" data-url="'+url+'" id="img'+data.new_img_id+'" src='+url+'>')
 				}
+				// console.log(id);
 			},
 			cache: false,
 		    contentType: false,

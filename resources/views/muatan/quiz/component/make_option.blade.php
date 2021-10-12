@@ -1,8 +1,8 @@
-<div class="container shadow" id="option_create_box" style="max-width: 800px; padding: 20px; background-color: white;">
+<div class="container shadow rounded" id="option_create_box" style="max-width: 800px; padding: 20px; background-color: white;">
 	<h5>Make Option <span style="float: right;" class="ion-android-close pointer" id="close_option_create_box"></span></h5>
 	<hr>
 	
-		<form id="option_form" enctype="multipart/form-data" style="height: 70vh; overflow: auto;">
+		<form id="option_form" enctype="multipart/form-data" style="max-height: 70vh; overflow: auto;">
 			@csrf
 			<header><b>Question</b></header>
 			<div style="font-size: 14px;">
